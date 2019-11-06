@@ -1,0 +1,94 @@
+---
+title: "RDC 2019 Who graph"
+
+subtitle: "WHAT THIS FILE DOES HERE"
+
+author: |
+  | McEwen Khundi
+  |
+  | London School of Hygiene & Tropical Medicine,
+  | Malawi-Liverpool-Wellcome Clinical Research Programme, Blantyre, Malawi
+  |
+
+date: | 
+  | `r format(Sys.time(), "%B %d, %Y")`
+  |
+  | Table of Contents:
+output: 
+  html_document:
+    theme: cosmo
+    highlight: espresso
+    toc: true
+---
+
+<br>
+
+## 1. Backgound
+
+
+<br>
+
+## 2. Set-up
+
+Load all required packages for analysis.
+
+```{r setup, echo=FALSE, include=FALSE, message=FALSE, comment=NA, warning=FALSE}
+library(tidyverse)    #for data manipulation
+library(pmthemes)     #for ggplot themes
+library(knitr)        #for tables
+library(here)
+
+```
+
+<br>
+
+## 3. Import datasets
+
+Import data required for the analysis.
+
+```{r import}
+load(here::here("data/cfr_whotb.rda"))
+
+```
+
+<br>
+
+## 4. Tidying and recoding
+
+```{r tidy}
+
+ggplot(cfr_whotb, aes(x=fct_reorder(country, cfr_pct), 
+                      y=cfr_pct, group=who_region, fill= who_region)) +
+    geom_point(shape=21, size=3, alpha= 0.8) +
+    geom_errorbar(aes(ymin=cfr_pct_lo, ymax=cfr_pct_hi), colour="black") +
+    labs(fill= "WHO regions", x="", y="Case fatality rates %", title = "20 Countries with highest TB case fatality rates in 2017") +
+    geom_hline(yintercept= 6.5, linetype="dashed", 
+                color = "red") +
+    ylim(0,100) +
+    coord_flip() +
+    theme_bw()
+ggsave(here("figures/top20tbcfr.png"))
+    
+```
+
+
+<br>
+
+## X. Reproducibility
+
+This reproduction of the analysis was run by: 
+
+```{r sysinfo, echo=FALSE, message=FALSE, comment=NA, warning=FALSE}
+
+sysinfo <- Sys.info()
+
+sysinfo <- data.frame(keyName=names(sysinfo), value=sysinfo, row.names=NULL)
+
+sysinfo %>% kable()
+```
+
+Analysis was run at **`r Sys.time()`**, and using the following Session Info:
+
+```{r sessioninfo, echo=FALSE, results='markdown', message=FALSE, comment=NA, warning=FALSE}
+sessionInfo()
+```
